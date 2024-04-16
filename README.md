@@ -18,6 +18,8 @@ $ curl -X PUT -d "name=Lucy" http://localhost:3000/person/lucy@email.com
 <h1>Accumulate/Update berhasil!</h1>
 $ curl -X DELETE http://localhost:3000/person/lucy@email.com
 <h1>Delete/Retract berhasil!</h1>
+$ curl http://localhost:3000/person
+<table><thead><tr><td>eid</td><td>name</td><td>email</td></tr></thead><tbody>["<tr><td>92358976733259</td><td>syd</td><td>syd@email.com</td></tr>" "<tr><td>79164837199953</td><td>fred</td><td>fred@email.com</td></tr>"]</tbody></table>
 $ curl http://localhost:3000/person/syd@email.com
 <table><thead><tr><td>eid</td><td>name</td><td>email</td></tr></thead><tbody><tr><td>92358976733259</td><td>syd</td><td>syd@email.com</td></tr></tbody></table>
 ```
