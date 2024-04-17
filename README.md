@@ -1,3 +1,8 @@
+### CONFIG DB
+```bash
+$ more ~/.datomic/local.edn 
+{:storage-dir "/absolute-path/arar-crud-compojure-datomic"}
+```
 ### RUN
 ```bash
 $ clojure -M:run
