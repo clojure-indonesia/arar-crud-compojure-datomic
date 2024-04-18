@@ -3,7 +3,7 @@
             [ring.middleware.params :refer [wrap-params]]
             [compojure.core :refer [defroutes GET POST DELETE PUT]]
             [compojure.route :refer [not-found]]
-            [clojure.pprint :refer [pprint]]
+            [hiccup2.core :refer [html]]
             [datomic.client.api :as d])
   (:gen-class))
 
@@ -15,7 +15,7 @@
 (def conn (d/connect client {:db-name db-name}))
 
 (defroutes routes
-  (GET "/" [] "<h1>Halo</h1>\n")
+  (GET "/" [] (str (html [:h1 "Halo"])))
   
   (GET "/person" []
        (let [db (d/db conn)
@@ -24,56 +24,57 @@
                               [?e :person/name ?name]
                               [?e :person/email ?email]]
                      :args [db]})]
-         (str "<table>"
-              "<thead><tr><td>eid</td><td>name</td><td>email</td></tr></thead>"
-              "<tbody>"
-              (mapv (fn [[eid name email]]
-                      (str "<tr><td>" eid "</td>"
-                           "<td>" name "</td>"
-                           "<td>" email "</td></tr>"))
-                    v)
-              "</tbody>"
-              "</table>")))
+         (str (html [:table {:style "border: 1px solid red"}
+                       [:thead
+                        [:tr
+                         [:td "eid"]
+                         [:td "name"]
+                         [:td "email"]]]
+                       [:tbody (for [x v]
+                                 [:tr
+                                  (for [xx x]
+                                    [:td xx])])]]))))
   
   (GET "/person/:email" [email]
        (let [db (d/db conn)
              m (d/pull db '[*] [:person/email email])]
-         (str "<table>"
-              "<thead><tr><td>eid</td><td>name</td><td>email</td></tr></thead>"
-              "<tbody>"
-              "<tr>"
-              "<td>" (:db/id m) "</td>"
-              "<td>" (:person/name m) "</td>"
-              "<td>" (:person/email m) "</td>"
-              "</tr>"
-              "</tbody>"
-              "</table>")))
+         (str (html [:table
+                       [:thead
+                        [:tr
+                         [:td "eid"]
+                         [:td "name"]
+                         [:td "email"]]]
+                       [:tbody
+                        [:tr
+                         [:td (:db/id m)]
+                         [:td (:person/name m)]
+                         [:td (:person/email m)]]]]))))
   
   (POST "/person" [name email]
         (if (contains?
              (d/transact conn {:tx-data [{:person/name name
                                           :person/email email}]})
              :db-after)
-          "<h1>Create/Assert berhasil!</h1>\n"
-          "<h1>Gagal!</h1>\n"))
+          (str (html [:h1 "Create/Assert berhasil!"]))
+          (str (html [:h1 "Gagal!"]))))
 
   (DELETE "/person/:email" [email]
           (if (contains?
                (d/transact conn {:tx-data [[:db/retractEntity [:person/email email]]
                                            [:db/add "datomic.tx" :db/doc "wrong assertion"]]})
                :db-after)
-            "<h1>Delete/Retract berhasil!</h1>\n"
-            "<h1>Gagal!</h1>\n"))
+            (str (html [:h1 "Delete/Retract berhasil!"]))
+            (str (html [:h1 "Gagal!"]))))
 
   (PUT "/person/:email" [email name]
        (if (contains?
             (d/transact conn {:tx-data [[:db/add [:person/email email] :person/name name]
                                         [:db/add "datomic.tx" :db/doc "correct data"]]})
             :db-after)
-         "<h1>Accumulate/Update berhasil!</h1>\n"
-         "<h1>Gagal!</h1>\n"))
+         (str (html [:h1 "Accumulate/Update berhasil!"]))
+         (str (html [:h1 "Gagal!"]))))
   
-  (not-found "<h1>Page not found</h1>\n"))
+  (not-found (str (html [:h1 "Page not found!"]))))
 
 (def handler
   (-> routes
