@@ -3,13 +3,18 @@
 $ more ~/.datomic/local.edn 
 {:storage-dir "/absolute-path/arar-crud-compojure-datomic"}
 ```
+### CLONE
+```bash
+$ git clone -b aot https://github.com/clojure-indonesia/arar-crud-compojure-datomic
+$ cd arar-crud-compojure-datomic
+```
 ### RUN
 ```bash
-$ clojure -M:run
+$ java -cp `clj -Spath` arar_crud_compojure_datomic.core
 [main] INFO org.eclipse.jetty.server.Server - jetty-11.0.20; built: 2024-01-29T21:04:22.394Z; git: 922f8dc188f7011e60d0361de585fd4ac4d63064; jvm 21.0.2+13-LTS
-[main] INFO org.eclipse.jetty.server.handler.ContextHandler - Started o.e.j.s.ServletContextHandler@2d94467b{/,null,AVAILABLE}
-[main] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@6ac4da08{HTTP/1.1, (http/1.1)}{0.0.0.0:3000}
-[main] INFO org.eclipse.jetty.server.Server - Started Server@1c00809b{STARTING}[11.0.20,sto=0] @17333ms
+[main] INFO org.eclipse.jetty.server.handler.ContextHandler - Started o.e.j.s.ServletContextHandler@218fc40d{/,null,AVAILABLE}
+[main] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@5248c05a{HTTP/1.1, (http/1.1)}{0.0.0.0:3000}
+[main] INFO org.eclipse.jetty.server.Server - Started Server@7205a8b7{STARTING}[11.0.20,sto=0] @6005ms
 ```
 ### PLAY
 ```
