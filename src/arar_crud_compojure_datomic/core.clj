@@ -15,7 +15,8 @@
 (def conn (d/connect client {:db-name db-name}))
 
 (defroutes routes
-  (GET "/" [] (str (html [:h1 "Halo"])))
+  (GET "/" [] (str (html [:h1 "Halo"]
+                         [:h2 [:a {:href "/person"} "Main ke sini..."]])))
   
   (GET "/person" []
        (let [db (d/db conn)
@@ -25,20 +26,23 @@
                               [?e :person/email ?email]]
                      :args [db]})]
          (str (html [:table {:style "border: 1px solid red"}
-                       [:thead
-                        [:tr
-                         [:td "eid"]
-                         [:td "name"]
-                         [:td "email"]]]
-                       [:tbody (for [x v]
-                                 [:tr
-                                  (for [xx x]
-                                    [:td xx])])]]))))
+                     [:thead
+                      [:tr
+                       [:td "eid"]
+                       [:td "name"]
+                       [:td "email"]]]
+                     [:tbody (for [x v]
+                               [:tr
+                                (for [xx x]
+                                  [:td (let [xxx (String/valueOf xx)]
+                                         (if (.endsWith xxx "@email.com")
+                                           [:a {:href (str "/person/" xxx)} xxx]
+                                           xxx))])])]]))))
   
   (GET "/person/:email" [email]
        (let [db (d/db conn)
              m (d/pull db '[*] [:person/email email])]
-         (str (html [:table
+         (str (html [:table {:style "border: 1px solid red"}
                        [:thead
                         [:tr
                          [:td "eid"]
